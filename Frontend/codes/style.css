@@ -1,0 +1,183 @@
+*{
+    font-family: 'consolas';
+    color: #DDD;
+}
+
+body{
+    margin:0px;
+    width:100vw;
+    height:100vh;
+    background: #0F172A;
+    background-image: url("/assets/darklines.png");
+    background-repeat: no-repeat;
+    background-size: contain;
+}
+
+.play-bar{
+    display: flex;
+    bottom:0px;
+    left:0px;
+    right:0px;
+    height:50px;
+}
+
+.content{
+    display: flex;
+    flex-direction: column;
+    right:0px;
+    top:0px;
+    bottom:60px;
+    left:0px;
+    padding:10px;
+}
+
+.play-bar , .content {
+    margin:10px;
+    position: absolute;
+    border-radius: 8px;
+    border:#FFF0 solid 1px;
+    transition: margin .2s ease-out;
+    background-color: #FFFFFF0D;
+    border:#FFFFFF20 solid 1px;
+}
+
+.play-bar:hover,.content:hover{
+    margin:12px;
+}
+
+/* BODY END */
+
+.btn-mini{
+    margin:8px!important;
+}
+
+.play-btn{
+    cursor: pointer;
+    margin:5px;
+    transition: transform .2s ease-out;
+}
+
+.play-btn:hover{
+    transform: scale(0.8);
+}
+
+.play-range{
+    flex-grow: 1;
+    appearance:auto;
+}
+
+.play-time{
+    margin:auto;
+    font-size:1.1rem;
+}
+
+.play-vol-container{
+    min-width: 50px;
+}
+
+.play-vol{
+    position: absolute;
+    top:-10px;
+    background-color: #FFFFFF0D;
+    border-radius: 8px;
+    border:1px solid #FFFFFF20;
+    flex-shrink: 0;
+    transition: transform .2s ease-out , opacity .2s ease-out;
+    transform-origin: 0px 0px;
+    transform: rotate(-90deg);
+}
+
+.play-vol-range{
+    margin:0px 10px;
+    width:150px;
+    height:50px;
+}
+
+/* COMPONENT - PLAYBAR END */
+
+.content-title{
+    margin:0px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.content-scroll{
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    overflow-y: auto;
+}
+
+::-webkit-scrollbar{display: none;}
+
+.content-item{
+    display: flex;
+    width:100%;
+    height:40px;
+    min-height: 40px;
+    align-items: center;
+}
+
+.content-item-icon{
+    height:100%;
+    transform:scale(0.7);
+}
+
+.content-item-title{
+    flex-grow: 1;
+    font-size: 1.2rem;
+    max-height:100%;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+.content-item-btn{
+    cursor: pointer;
+    height:100%;
+    transform:scale(0.7);
+    transition: transform .2s ease-out;
+}
+
+.content-item-btn:hover{
+    transform:scale(0.6);
+}
+
+/* CONTENT-ITEM + CONTENT-SCROLL */
+
+.content-scroll-fill{
+    position: relative;
+    min-height: 100px;
+    flex-grow: 1;
+}
+
+.content-pushall{
+    position: absolute;
+    right:0px;
+    bottom:0px;
+    display: flex;
+    align-items: center;
+    height:40px;
+    border: 1px solid #FFFFFF14;
+    border-radius: 8px;
+    padding:10px;
+    background-color: #FFFFFF0D;
+    cursor: pointer;
+    transition: transform .2s ease-out;
+}
+
+.content-pushall:hover{
+    transform: scale(0.9);
+}
+
+.content-pushall>img{
+    height:100%;
+}
+
+.content-pushall>p{
+    margin:8px;
+    overflow: hidden;
+}
+
+/* CONTENT-SCROLL-FILL + CONTENT-PUSHALL */

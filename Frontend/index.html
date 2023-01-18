@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="/codes/script.js"></script>
+    <script defer src="/libs/alpine.js"></script>
+    <link rel="stylesheet" href="/codes/style.css">
+    <link rel="shortcut icon" href="/assets/note.svg" type="image/x-icon">
+    <title>SyncPlayWeb2</title>
+</head>
+<body x-data="data">
+    <!-- Source -->
+    <div class="content" x-show="view==0">
+        <h1 class="content-title">来源</h1>
+        <div class="content-scroll">
+            <div class="content-item" x-show="nowat!=''">
+                <img src="/assets/dir.svg" class="content-item-icon"/>
+                <div class="content-item-title">Parent Directory</div>
+                <img src="/assets/arrow-right.svg" class="content-item-btn" @click="getFileList('..')"/>
+            </div>
+            <template x-for="name in explore[0]">
+                <div class="content-item">
+                    <img src="/assets/dir.svg" class="content-item-icon"/>
+                    <div class="content-item-title" x-text="name">The Title Of The Directory</div>
+                    <img src="/assets/arrow-right.svg" class="content-item-btn" @click="getFileList(name)"/>
+                </div>
+            </template>
+            <template x-for="name in explore[1]">
+                <div class="content-item">
+                    <img src="/assets/song.svg" class="content-item-icon"/>
+                    <div class="content-item-title" x-text="name">The Name Of The Song</div>
+                    <img src="/assets/play.svg" class="content-item-btn" @click="playAndSetFolder(name)">
+                    <img src="/assets/arrow-right.svg" class="content-item-btn" @click="pushSong(name)"/>
+                </div>
+            </template>
+            <div class="content-scroll-fill" x-data="{hover:false}">
+                <div class="content-pushall"
+                    @click="pushFolderToList()"
+                    @mouseover="hover=true" @mouseleave="hover=false">
+                    <p x-show="hover" x-transition>添加当前文件夹的所有歌曲</p>
+                    <img src="/assets/folder-symlink.svg">
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Playlist -->
+    <div class="content" x-show="view==1">
+        <h1 class="content-title">播放列表</h1>
+        <div class="content-scroll">
+            <template x-for="url in playlist">
+                <div class="content-item">
+                    <img src="/assets/song.svg" class="content-item-icon"/>
+                    <div class="content-item-title" x-text="getNameByUrl(url)"></div>
+                    <img class="content-item-btn"
+                        :src="playlist[playindex]!=url?'/assets/play.svg':'/assets/wave.svg'"
+                        @click="playSong(url)"
+                    />
+                    <img @click="popSong(url)" src="/assets/remove.svg" class="content-item-btn"/>
+                </div>
+            </template>
+            <div class="content-scroll-fill" x-data="{hover:false}">
+                <div class="content-pushall" 
+                    @click="clearList()"
+                    @mouseover="hover=true" @mouseleave="hover=false">
+                    <p x-show="hover" x-transition>清空列表</p>
+                    <img src="/assets/folder-x.svg">
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Play Bar -->
+    <div class="play-bar">
+        <img class="play-btn" src="/assets/play.svg"  
+            x-show="!playing" 
+            @click="playerToggle()"
+        >
+        <img class="play-btn" src="/assets/pause.svg" 
+            x-show="playing" 
+            @click="playerToggle()"
+        >
+        <!-- PLAY -->
+        <input :value="playPercent" @focus="rangable=false" @blur="rangable=true" @change="playerSeek($el.value)" class="play-range" type="range" step="0.01">
+        <!-- RANGE -->
+        <p class="play-time">00:00/00:00</p>
+        <!-- TIMER -->
+        <div class="play-vol-container" style="display:flex">
+            <div class="play-vol" x-show="volsetter">
+                <input value="100" class="play-vol-range" type="range" 
+                    @input="volume=$el.value;player.volume = volume/100;" 
+                    @blur="volSetOff()"
+                />
+            </div>
+            <!-- VOLUME SETTER -->
+            <img src="/assets/volume-0.svg" class="play-btn" x-show="volume==0" @click="volSetOn()">
+            <img src="/assets/volume-1.svg" class="play-btn" x-show="volume<30 && volume>0" @click="volSetOn()">
+            <img src="/assets/volume-2.svg" class="play-btn" x-show="volume>=30" @click="volSetOn()">
+        </div>
+        <!-- VOLUME -->
+        <img src="/assets/repeat.svg"   class="play-btn btn-mini" x-show="mode==0" @click="modeSwitch()">
+        <img src="/assets/repeat-1.svg" class="play-btn btn-mini" x-show="mode==1" @click="modeSwitch()">
+        <img src="/assets/shuffle.svg"  class="play-btn btn-mini" x-show="mode==2" @click="modeSwitch()">
+        <!-- MODE -->
+        <img src="/assets/note-beamed.svg"   class="play-btn btn-mini" x-show="view==0" @click="view=1">
+        <img src="/assets/note.svg"   class="play-btn btn-mini" x-show="view==1" @click="view=0">
+        <!-- VIEW -->
+        <img src="/assets/person-add.svg" @click="JoinSync()" class="play-btn btn-mini" x-show="!sync">
+        <img src="/assets/people.svg"     @click="QuitSync()"  class="play-btn btn-mini" x-show="sync">
+        <!-- ONLINE -->
+    </div>
+</body>
+</html>
